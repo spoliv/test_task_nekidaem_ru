@@ -1,0 +1,40 @@
+{% load static %}
+
+<table class="table" id="author-table">
+    <tr>
+        <th>
+            <h4>Автор Блога:</h4>
+        </th>
+
+        <th>
+            <h4>Тематика Блога:</h4>
+        </th>
+
+
+    </tr>
+    {% for blog in object_list %}
+    <tr>
+        <td>
+            {{blog.author.username}}
+        </td>
+
+        <td>
+            {{blog.blog_theme}}
+        </td>
+
+        <td>
+            <a href="{% url 'subscriptionsapp:subscribe' blog.pk %}">
+                Подписаться
+            </a>
+
+        </td>
+{#        <td>#}
+{##}
+{#            <a href="{% url 'subscriptionsapp:unsubscribe' blog.pk %}">#}
+{#                 Отписаться#}
+{#            </a>#}
+{#        </td>#}
+
+    </tr>
+    {% endfor %}
+</table>

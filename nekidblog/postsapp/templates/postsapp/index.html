@@ -1,39 +1,25 @@
-{#<!DOCTYPE html>#}
-{#{% load static %}#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Title</title>#}
-{#</head>#}
-{##}
-{#<body>#}
-{##}
-{#    <form method="post" action="{% url 'postsapp:add_post' %}" class="js-good-create-form">#}
-{#        {% csrf_token %}#}
-{#        <div class="modal-body">#}
-{#            {{ post_form.as_p }}#}
-{#        </div>#}
-{#        <div class="modal-footer">#}
-{#            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>#}
-{#            <button type="submit" class="btn btn-primary">Сохранить</button>#}
-{#        </div>#}
-{#    </form>#}
-{##}
-{#</body>#}
-{#</html>#}
-
-
 {% extends 'postsapp/base.html' %}
 {% load static %}
 
 {% block content %}
+    <div>
+        <a href="{% url 'postsapp:all_blogs' %}">
+            All Blogs
+        </a>
+    </div>
+
+    <div>
+        <a href="{% url 'subscriptionsapp:my_subscriptions' %}">
+            Мои подписки
+        </a>
+    </div>
+    <br>
     <form class="form-horizontal" method="post" action="{% url 'postsapp:add_post' %}">
         {% csrf_token %}
         {{ post_form.as_p }}
         <br>
         <button type="button" class="btn btn-default">Отмена</button>
         <button type="submit" class="btn btn-primary">Сохранить</button>
-{#        <input class="form-control" type="submit" value="войти">#}
     </form>
 
 {% endblock %}

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'postsapp.apps.PostsappConfig',
+    'subscriptionsapp.apps.SubscriptionsappConfig',
 ]
 
 MIDDLEWARE = [

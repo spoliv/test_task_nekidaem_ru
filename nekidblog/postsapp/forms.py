@@ -19,7 +19,7 @@ class BlogAuthorLoginForm(AuthenticationForm):
 class PostForm(forms.ModelForm):
    class Meta:
        model = Post
-       exclude = ('author', 'date_created', )
+       exclude = ('blog', 'date_created', )
        #exclude = ('date_created', )
 
    def __init__(self, *args, **kwargs):

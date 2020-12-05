@@ -1,0 +1,27 @@
+{% extends 'subscriptionsapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <h4>Ваши подписки {{ user }}</h4>
+        <br>
+        {% include 'subscriptionsapp/subscriptions_table_part.html' %}
+
+    </div>
+    <br />
+    <div>
+        <a href="{% url 'postsapp:add_post' %}"
+           class="btn btn-success">
+            Назад в блог
+        </a>
+    </div>
+    <br />
+    <footer>
+        <div class="container">
+            <div class="row">
+                <p class="copyright text-muted">Copyright &copy; NekidaemRu</p>
+            </div>
+        </div>
+    </footer>
+
+{% endblock %}

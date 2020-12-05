@@ -1,8 +1,10 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
+from django.views.generic import ListView
 from django.urls import reverse
 from postsapp.forms import BlogAuthorLoginForm, PostForm
 from django.contrib.auth.models import User as BlogAuthor
+from .models import Blog
 
 
 def login(request):
@@ -26,10 +28,19 @@ def add_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            form.instance.author = request.user
+            blog = Blog.objects.filter(author=request.user).first()
+            form.instance.blog = blog
             form.save()
             form = PostForm()
     else:
         form = PostForm()
     context = {'post_form': form}
     return render(request, 'postsapp/index.html', context)
+
+
+class BlogList(ListView):
+    template_name = "postsapp/blogs.html"
+    model = Blog
+
+    def get_queryset(self):
+        return Blog.objects.all().select_related()
