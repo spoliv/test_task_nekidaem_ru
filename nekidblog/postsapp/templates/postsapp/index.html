@@ -2,24 +2,19 @@
 {% load static %}
 
 {% block content %}
-    <div>
-        <a href="{% url 'postsapp:all_blogs' %}">
-            All Blogs
-        </a>
-    </div>
 
-    <div>
-        <a href="{% url 'subscriptionsapp:my_subscriptions' %}">
-            Мои подписки
-        </a>
-    </div>
+    <h4>Добро пожаловать {{ user }}</h4>
+        <br>
+
+    {% include 'postsapp/menu.html' %}
+
     <br>
     <form class="form-horizontal" method="post" action="{% url 'postsapp:add_post' %}">
         {% csrf_token %}
         {{ post_form.as_p }}
         <br>
         <button type="button" class="btn btn-default">Отмена</button>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="submit" class="btn btn-primary">Опубликовать</button>
     </form>
 
 {% endblock %}

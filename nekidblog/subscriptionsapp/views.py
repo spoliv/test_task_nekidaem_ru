@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, Ht
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from .models import Subscription
-from postsapp.models import Blog
+from postsapp.models import Blog, Post
 
 
 def subscribe(request, pk):
@@ -33,5 +33,6 @@ class UserSubscriptionsList(ListView):
 
     def get_queryset(self):
         return Subscription.objects.filter(subscriber=self.request.user, is_active=True).select_related()
+
 
 # Create your views here.

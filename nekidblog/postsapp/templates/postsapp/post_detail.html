@@ -1,0 +1,13 @@
+{% extends 'postsapp/base.html' %}
+{% load static %}
+
+{% block content %}
+        <div>
+            <h5>{{object.post_title}}  <span style="color: blue; font-style: italic; font-size: 14px">{{object.date_created}}</span></h5>
+            <p>
+                {{object.post_body}}
+            </p>
+        </div>
+        <br>
+
+{% endblock %}

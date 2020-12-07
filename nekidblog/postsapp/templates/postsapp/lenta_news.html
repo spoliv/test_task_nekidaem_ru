@@ -1,0 +1,35 @@
+{% extends 'postsapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% include 'postsapp/menu.html' %}
+    {% for blog, posts in lenta.items %}
+        <div>
+            <h4>{{blog.author}}  <span style="font-style: italic">{{blog.blog_theme}}</span></h4>
+
+            {% for post in posts %}
+                <h5>{{post.post_title}}  <span style="color: blue; font-style: italic; font-size: 14px">{{post.date_created}}</span></h5>
+                <p>
+                    {{post.post_body}}
+                </p>
+            {% endfor %}
+        </div>
+        <br>
+    {% endfor %}
+    <br>
+    <div>
+        <a href="{% url 'postsapp:add_post' %}"
+           class="btn btn-success">
+            Назад в блог
+        </a>
+    </div>
+    <br />
+    <footer>
+        <div class="container">
+            <div class="row">
+                <p class="copyright text-muted">Copyright &copy; NekidaemRu</p>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+

@@ -1,12 +1,27 @@
 {% extends 'postsapp/base.html' %}
 {% load static %}
 
+{#{% block content %}#}
+{#    <form class="form-horizontal" method="post">#}
+{#        {% csrf_token %}#}
+{#        {{ login_form.as_p }}#}
+{#        <br>#}
+{#        <input class="form-control" type="submit" value="войти">#}
+{#    </form>#}
+{##}
+{#{% endblock %}#}
+
+
 {% block content %}
-    <form class="form-horizontal" method="post">
+    <h1>Вход на сайт</h1>
+    {% if error %}
+        <div style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post">
         {% csrf_token %}
-        {{ login_form.as_p }}
-        <br>
-        <input class="form-control" type="submit" value="войти">
+        <input type="text" name="username" placeholder="Логин">
+        <input type="password" name="password" placeholder="Пароль">
+        <input type="submit" value="Войти">
     </form>
 
 {% endblock %}

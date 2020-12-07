@@ -1,0 +1,21 @@
+{% load static %}
+
+<ul>
+        <li>
+            <a href="{% url 'postsapp:all_blogs' %}">
+                Все блоги
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'subscriptionsapp:my_subscriptions' %}">
+                Мои подписки
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'postsapp:lenta_news' %}">
+                Лента новостей
+            </a>
+        </li>
+    </ul>
