@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+from configparser import ConfigParser
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,12 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hy609=)g+r-3a4*!1)g&gaa15u+yucsv_c%%f*&k+ed16afldg'
-
+local_config_path = os.path.join(BASE_DIR, 'conf', 'local.conf')
+config = ConfigParser()
+config.read(local_config_path)
+DEBUG = config.getboolean('main', 'DEBUG')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # Application definition
@@ -83,12 +85,12 @@ DATABASES = {
     # }
 
     'default': {
-            'NAME': 'nekidblog',
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'USER': 'nekidalo',
-            'PASSWORD': 'nekidaemru',
-            'HOST': 'localhost',
-            'PORT': ''
+            "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+            "USER": os.environ.get("SQL_USER", "user"),
+            "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+            "HOST": os.environ.get("SQL_HOST", "localhost"),
+            "PORT": os.environ.get("SQL_PORT", "5432"),
             }
 }
 
@@ -111,15 +113,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = 'tmp/email-messages/'
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = 'tmp/email-messages/'
+
+EMAIL_HOST = config.get('smtp', 'EMAIL_HOST')
+EMAIL_PORT = config.get('smtp', 'EMAIL_PORT')
+EMAIL_HOST_USER = config.get('smtp', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config.get('smtp', 'EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config.getboolean('smtp', 'EMAIL_USE_TLS')
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

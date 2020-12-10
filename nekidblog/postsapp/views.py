@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.contrib import auth
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from postsapp.forms import BlogAuthorLoginForm, PostForm
 from .models import Blog, Post
 from subscriptionsapp.models import Subscription
@@ -30,41 +30,73 @@ class LoginView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         context = {}
-        if request.method == 'POST':
+        title = 'вход'
+        login_form = BlogAuthorLoginForm(data=request.POST)
+        if request.method == 'POST'and login_form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
             user = auth.authenticate(request, username=username, password=password)
-            if user is not None:
+            if user:
                 auth.login(request, user)
                 form = PostForm()
                 context['post_form'] = form
                 return render(request, 'postsapp/index.html', context)
-            else:
-                context['error'] = "Логин или пароль неправильные"
+        context['title'] = title
+        context['login_form'] = login_form
         return render(request, self.template_name, context)
 
 
-def add_post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            blog = Blog.objects.filter(author=request.user).first()
-            form.instance.blog = blog
-            form.save()
-            subscribers = Subscription.objects.filter(source=blog, is_active=True).select_related()
-            addressee_list = []
-            for subscriber in subscribers:
-                addressee = subscriber.subscriber
-                addressee_list.append(addressee.email)
-            sender = request.user
-            post = Post.objects.filter(blog=blog).last()
-            pk = post.pk
-            send_newpost_mail(sender, addressee_list, pk)
-            form = PostForm()
-    else:
+# def add_post(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST)
+#         if form.is_valid():
+#             blog = Blog.objects.filter(author=request.user).first()
+#             form.instance.blog = blog
+#             form.save()
+#             subscribers = Subscription.objects.filter(source=blog, is_active=True).select_related()
+#             addressee_list = []
+#             for subscriber in subscribers:
+#                 addressee = subscriber.subscriber
+#                 addressee_list.append(addressee.email)
+#             sender = request.user
+#             post = Post.objects.filter(blog=blog).last()
+#             pk = post.pk
+#             send_newpost_mail(sender, addressee_list, pk)
+#             form = PostForm()
+#     else:
+#         form = PostForm()
+#     context = {'post_form': form}
+#     return render(request, 'postsapp/index.html', context)
+
+
+class CreatePost(CreateView):
+    model = Post
+    fields = ('post_title', 'post_body')
+    template_name = 'postsapp/index.html'
+
+    def get_success_url(self):
+        return reverse('postsapp:add_post')
+
+    def get_context_data(self, **kwargs):
+        context = super(CreatePost, self).get_context_data(**kwargs)
         form = PostForm()
-    context = {'post_form': form}
-    return render(request, 'postsapp/index.html', context)
+        context['post_form'] = form
+        return context
+
+    def form_valid(self, form):
+        blog = Blog.objects.filter(author=self.request.user).first()
+        form.instance.blog = blog
+        super().form_valid(form)
+        subscribers = Subscription.objects.filter(source=blog, is_active=True).select_related()
+        addressee_list = []
+        for subscriber in subscribers:
+            addressee = subscriber.subscriber
+            addressee_list.append(addressee.email)
+        sender = self.request.user
+        post = Post.objects.filter(blog=blog).last()
+        pk = post.pk
+        send_newpost_mail(sender, addressee_list, pk)
+        return super().form_valid(form)
 
 
 class BlogList(ListView):
